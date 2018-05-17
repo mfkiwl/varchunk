@@ -32,8 +32,9 @@
 # define VARCHUNK_USE_SHARED_MEM
 #endif
 
-#define ITERATIONS 10000000
+static uint64_t iterations = 10000000;
 #define THRESHOLD (RAND_MAX / 256)
+#define PAD(SIZE) ( ( (size_t)(SIZE) + 7U ) & ( ~7U ) )
 
 static const struct timespec req = {
 	.tv_sec = 0,
@@ -57,12 +58,14 @@ producer_main(void *arg)
 	size_t written;
 	uint64_t cnt = 0;
 
-	while(cnt < ITERATIONS)
+	while(cnt < iterations)
 	{
 		if(rand() < THRESHOLD)
+		{
 			nanosleep(&req, NULL);
+		}
 
-		written = rand() * 1024.f / RAND_MAX;
+		written = PAD(rand() * 1024.f / RAND_MAX);
 
 		size_t maximum;
 		if( (ptr = varchunk_write_request_max(varchunk, written, &maximum)) )
@@ -70,9 +73,11 @@ producer_main(void *arg)
 			assert(maximum >= written);
 			end = ptr + written;
 			for(uint8_t *src=ptr; src<end; src+=sizeof(uint64_t))
+			{
 				*(uint64_t *)src = cnt;
+				assert(*(uint64_t *)src == cnt);
+			}
 			varchunk_write_advance(varchunk, written);
-			//fprintf(stdout, "P %"PRIu64" %zu %zu\n", cnt, written, maximum);
 			cnt++;
 		}
 		else
@@ -93,18 +98,21 @@ consumer_main(void *arg)
 	size_t toread;
 	uint64_t cnt = 0;
 
-	while(cnt < ITERATIONS)
+	while(cnt < iterations)
 	{
 		if(rand() < THRESHOLD)
+		{
 			nanosleep(&req, NULL);
+		}
 
 		if( (ptr = varchunk_read_request(varchunk, &toread)) )
 		{
 			end = ptr + toread;
 			for(const uint8_t *src=ptr; src<end; src+=sizeof(uint64_t))
+			{
 				assert(*(const uint64_t *)src == cnt);
+			}
 			varchunk_read_advance(varchunk);
-			//fprintf(stdout, "C %"PRIu64" %zu\n", cnt, toread);
 			cnt++;
 		}
 		else
@@ -141,7 +149,9 @@ varchunk_shm_init(varchunk_shm_t *varchunk_shm, const char *name, size_t minimum
 
 	varchunk_shm->name = strdup(name);
 	if(!varchunk_shm->name)
+	{
 		return -1;
+	}
 
 	bool is_first = true;
 	varchunk_shm->fd = shm_open(varchunk_shm->name, O_RDWR | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR);
@@ -167,7 +177,9 @@ varchunk_shm_init(varchunk_shm_t *varchunk_shm, const char *name, size_t minimum
 	}
 
 	if(is_first)
+	{
 		varchunk_init(varchunk_shm->varchunk, body_size, release_and_acquire);
+	}
 
 	return 0;
 }
@@ -189,6 +201,8 @@ test_shared()
 {
 	const char *name = "/varchunk_shm_test";
 	pid_t pid = fork();
+
+	assert(pid != -1);
 
 	if(pid == 0) // child
 	{
@@ -212,10 +226,15 @@ test_shared()
 #endif
 
 int
-main(int argc __attribute__((unused)), char **argv __attribute__((unused)))
+main(int argc, char **argv)
 {
 	const int seed = time(NULL);
 	srand(seed);
+
+	if(argc >= 2)
+	{
+		iterations = atoi(argv[1]);
+	}
 
 	assert(varchunk_is_lock_free());
 

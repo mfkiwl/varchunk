@@ -22,8 +22,10 @@ stages:
     - ninja -C build
 
 .test_template: &test_definition
-  <<: *build_definition
+  <<: *common_definition
   script:
+    - meson --prefix=/ --cross-file "${TOOLCHAIN_FILE}" build
+    - ninja -C build
     - ninja -C build test
 
 .universal_linux_template: &universal_linux_definition

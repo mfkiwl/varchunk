@@ -20,4 +20,6 @@ test_varchunk = executable('test_varchunk',
 	dependencies : [rt_dep, thread_dep],
 	install : false)
 
-test('Test', test_varchunk)
+test('Test', test_varchunk,
+	args : ['1000000'],
+	timeout : 180) # seconds
