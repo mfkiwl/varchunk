@@ -52,8 +52,8 @@ static void *
 producer_main(void *arg)
 {
 	varchunk_t *varchunk = arg;
-	void *ptr;
-	const void *end;
+	uint8_t *ptr;
+	const uint8_t *end;
 	size_t written;
 	uint64_t cnt = 0;
 
@@ -69,7 +69,7 @@ producer_main(void *arg)
 		{
 			assert(maximum >= written);
 			end = ptr + written;
-			for(void *src=ptr; src<end; src+=sizeof(uint64_t))
+			for(uint8_t *src=ptr; src<end; src+=sizeof(uint64_t))
 				*(uint64_t *)src = cnt;
 			varchunk_write_advance(varchunk, written);
 			//fprintf(stdout, "P %"PRIu64" %zu %zu\n", cnt, written, maximum);
@@ -88,8 +88,8 @@ static void *
 consumer_main(void *arg)
 {
 	varchunk_t *varchunk = arg;
-	const void *ptr;
-	const void *end;
+	const uint8_t *ptr;
+	const uint8_t *end;
 	size_t toread;
 	uint64_t cnt = 0;
 
@@ -101,7 +101,7 @@ consumer_main(void *arg)
 		if( (ptr = varchunk_read_request(varchunk, &toread)) )
 		{
 			end = ptr + toread;
-			for(const void *src=ptr; src<end; src+=sizeof(uint64_t))
+			for(const uint8_t *src=ptr; src<end; src+=sizeof(uint64_t))
 				assert(*(const uint64_t *)src == cnt);
 			varchunk_read_advance(varchunk);
 			//fprintf(stdout, "C %"PRIu64" %zu\n", cnt, toread);
@@ -212,7 +212,7 @@ test_shared()
 #endif
 
 int
-main(int argc, char **argv)
+main(int argc __attribute__((unused)), char **argv __attribute__((unused)))
 {
 	const int seed = time(NULL);
 	srand(seed);
