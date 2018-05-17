@@ -12,12 +12,17 @@ add_project_arguments('-D_GNU_SOURCE', language : 'c')
 conf_data = configuration_data()
 cc = meson.get_compiler('c')
 
-rt_dep = cc.find_library('rt')
 thread_dep = dependency('threads')
+deps = [thread_dep]
+
+if host_machine.system() == 'linux'
+	rt_dep = cc.find_library('rt')
+	deps += rt_dep
+endif
 
 test_varchunk = executable('test_varchunk',
 	'test_varchunk.c',
-	dependencies : [rt_dep, thread_dep],
+	dependencies : deps,
 	install : false)
 
 test('Test', test_varchunk,
