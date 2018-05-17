@@ -10,10 +10,6 @@ stages:
 .common_template: &common_definition
   <<: *variables_definition
   stage: test 
-  artifacts:
-    name: "${BASE_NAME}-$(cat VERSION)-${CI_BUILD_NAME}"
-    paths:
-      - "${BASE_NAME}-$(cat VERSION)/"
 
 .build_template: &build_definition
   <<: *common_definition
