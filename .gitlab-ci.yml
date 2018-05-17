@@ -1,6 +1,5 @@
 stages:
-  - build
-  - deploy
+  - test
 
 .variables_template: &variables_definition
   variables:
@@ -10,7 +9,7 @@ stages:
 
 .common_template: &common_definition
   <<: *variables_definition
-  stage: build
+  stage: test 
   artifacts:
     name: "${BASE_NAME}-$(cat VERSION)-${CI_BUILD_NAME}"
     paths:
@@ -57,13 +56,3 @@ i686-w64-mingw32:
 
 universal-apple-darwin:
   <<: *universal_apple_definition
-
-pack:
-  <<: *variables_definition
-  stage: deploy
-  script:
-    - echo 'packing up...'
-  artifacts:
-    name: "${BASE_NAME}-$(cat VERSION)"
-    paths:
-      - "${BASE_NAME}-$(cat VERSION)/"
