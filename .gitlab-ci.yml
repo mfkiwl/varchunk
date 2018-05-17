@@ -20,19 +20,23 @@ stages:
   script:
     - meson --prefix=/ --cross-file "${TOOLCHAIN_FILE}" build
     - ninja -C build
-    - ninja -C test
+
+.test_template: &test_definition
+  <<: *build_definition
+  script:
+    - ninja -C build test
 
 .universal_linux_template: &universal_linux_definition
   image: ventosus/universal-linux-gnu
-  <<: *build_definition
+  <<: *test_definition
 
 .arm_linux_template: &arm_linux_definition
   image: ventosus/arm-linux-gnueabihf
-  <<: *build_definition
+  <<: *test_definition
 
 .universal_w64_template: &universal_w64_definition
   image: ventosus/universal-w64-mingw32
-  <<: *build_definition
+  <<: *test_definition
 
 .universal_apple_template: &universal_apple_definition
   image: ventosus/universal-apple-darwin
