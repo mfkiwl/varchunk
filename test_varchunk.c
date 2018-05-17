@@ -30,24 +30,16 @@
 #	include <fcntl.h>
 # include <string.h>
 # define VARCHUNK_USE_SHARED_MEM
-#endif
-
-static uint64_t iterations = 10000000;
-#define THRESHOLD (RAND_MAX / 256)
-#define PAD(SIZE) ( ( (size_t)(SIZE) + 7U ) & ( ~7U ) )
 
 static const struct timespec req = {
 	.tv_sec = 0,
 	.tv_nsec = 1
 };
+#endif
 
-typedef struct _varchunk_shm_t varchunk_shm_t;
-
-struct _varchunk_shm_t {
-	char *name;
-	int fd;
-	varchunk_t *varchunk;
-};
+static uint64_t iterations = 10000000;
+#define THRESHOLD (RAND_MAX / 256)
+#define PAD(SIZE) ( ( (size_t)(SIZE) + 7U ) & ( ~7U ) )
 
 static void *
 producer_main(void *arg)
@@ -60,10 +52,12 @@ producer_main(void *arg)
 
 	while(cnt < iterations)
 	{
+#if !defined(_WIN32)
 		if(rand() < THRESHOLD)
 		{
 			nanosleep(&req, NULL);
 		}
+#endif
 
 		written = PAD(rand() * 1024.f / RAND_MAX);
 
@@ -100,10 +94,12 @@ consumer_main(void *arg)
 
 	while(cnt < iterations)
 	{
+#if !defined(_WIN32)
 		if(rand() < THRESHOLD)
 		{
 			nanosleep(&req, NULL);
 		}
+#endif
 
 		if( (ptr = varchunk_read_request(varchunk, &toread)) )
 		{
@@ -140,6 +136,15 @@ test_threaded()
 
 	varchunk_free(varchunk);
 }
+
+#if defined(VARCHUNK_USE_SHARED_MEM)
+typedef struct _varchunk_shm_t varchunk_shm_t;
+
+struct _varchunk_shm_t {
+	char *name;
+	int fd;
+	varchunk_t *varchunk;
+};
 
 static int
 varchunk_shm_init(varchunk_shm_t *varchunk_shm, const char *name, size_t minimum, bool release_and_acquire)
@@ -195,7 +200,6 @@ varchunk_shm_deinit(varchunk_shm_t *varchunk_shm)
 	free(varchunk_shm->name);
 }
 
-#if defined(VARCHUNK_USE_SHARED_MEM)
 static void
 test_shared()
 {
@@ -228,8 +232,10 @@ test_shared()
 int
 main(int argc, char **argv)
 {
+#if !defined(_WIN32)
 	const int seed = time(NULL);
 	srand(seed);
+#endif
 
 	if(argc >= 2)
 	{

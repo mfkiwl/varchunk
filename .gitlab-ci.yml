@@ -34,7 +34,7 @@ stages:
 
 .universal_w64_template: &universal_w64_definition
   image: ventosus/universal-w64-mingw32
-  <<: *test_definition
+  <<: *build_definition
 
 .universal_apple_template: &universal_apple_definition
   image: ventosus/universal-apple-darwin
