@@ -5,7 +5,6 @@ stages:
   variables:
     BASE_NAME: "varchunk"
     PKG_CONFIG_PATH: "/opt/lv2/lib/pkgconfig:/opt/${CI_BUILD_NAME}/lib/pkgconfig:/usr/lib/${CI_BUILD_NAME}/pkgconfig"
-    TOOLCHAIN_FILE: "${CI_PROJECT_DIR}/meson/${CI_BUILD_NAME}"
 
 .common_template: &common_definition
   <<: *variables_definition
@@ -14,13 +13,13 @@ stages:
 .build_template: &build_definition
   <<: *common_definition
   script:
-    - meson --prefix=/ --cross-file "${TOOLCHAIN_FILE}" build
+    - meson --cross-file "${CI_BUILD_NAME}" build
     - ninja -C build
 
 .test_template: &test_definition
   <<: *common_definition
   script:
-    - meson --prefix=/ --cross-file "${TOOLCHAIN_FILE}" build
+    - meson --cross-file "${CI_BUILD_NAME}" build
     - ninja -C build
     - ninja -C build test
 
