@@ -33,7 +33,10 @@ stages:
 
 .universal_w64_template: &universal_w64_definition
   image: ventosus/universal-w64-mingw32
-  <<: *build_definition
+  before_script:
+    - ln -s /usr/i686-w64-mingw32/lib/libwinpthread-1.dll /opt/i686-w64-mingw32/lib/libwinpthread-1.dll
+    - ln -s /usr/x86_64-w64-mingw32/lib/libwinpthread-1.dll /opt/x86_64-w64-mingw32/lib/libwinpthread-1.dll
+  <<: *test_definition
 
 .universal_apple_template: &universal_apple_definition
   image: ventosus/universal-apple-darwin
