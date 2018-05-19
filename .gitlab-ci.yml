@@ -21,7 +21,8 @@ stages:
   script:
     - meson --cross-file "${CI_BUILD_NAME}" build
     - ninja -C build
-    - ninja -C build test
+    - cd build
+    - meson test --verbose --wrap "${CI_BUILD_NAME}.wrap"
 
 .universal_linux_template: &universal_linux_definition
   image: ventosus/universal-linux-gnu
