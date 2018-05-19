@@ -26,5 +26,5 @@ test_varchunk = executable('test_varchunk',
 	install : false)
 
 test('Test', test_varchunk,
-	args : ['1000000'],
-	timeout : 240) # seconds
+	args : ['100000'],
+	timeout : 360) # seconds
