@@ -1,2 +1,2 @@
 include:
-  - remote: 'https://dl.open-music-kontrollers.ch/lv2-plugin.yml'
+  - local: 'gitlab-ci/generic.yml'
