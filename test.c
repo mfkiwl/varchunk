@@ -1,7 +1,7 @@
 /*
-* SPDX-FileCopyrightText: (c) Hanspeter Portner (dev@open-music-kontrollers.ch)
-* SPDX-License-Identifier: Artistic-2.0
-*/
+ * SPDX-FileCopyrightText: (c) Hanspeter Portner (dev@open-music-kontrollers.ch)
+ * SPDX-License-Identifier: Artistic-2.0
+ */
 
 #include <stdio.h>
 #include <stdlib.h>

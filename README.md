@@ -1,3 +1,7 @@
+<!--
+  -- (SPDX-FileCopyrightText: (c) Hanspeter Portner (dev@open-music-kontrollers.ch)
+  -- (SPDX-License-Identifier: CC0-1.0
+  -->
 # Varchunk
 
 ## Ringbuffer optimized for realtime event handling
@@ -23,6 +27,12 @@
 	cd build
 	ninja -j4
 	ninja test
+
+### Dependencies
+
+#### Optional
+
+* [REUSE](https://git.fsfe.org/reuse/tool) (tool for compliance with the REUSE recommendations)
 
 ### Usage
 

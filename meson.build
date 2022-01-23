@@ -12,20 +12,37 @@ reuse = find_program('reuse', required : false)
 
 add_project_arguments('-D_GNU_SOURCE', language : 'c')
 
-conf_data = configuration_data()
 cc = meson.get_compiler('c')
 
 thread_dep = dependency('threads')
-deps = [thread_dep]
+
+lib_deps = []
+
+lib_incs = []
+lib_incs += include_directories('')
+
+lib_srcs = []
+lib_srcs += 'varchunk.c'
 
 if host_machine.system() == 'linux'
 	rt_dep = cc.find_library('rt')
-	deps += rt_dep
+	lib_deps += rt_dep
 endif
 
-test_varchunk = executable('test_varchunk',
-	'test_varchunk.c',
-	dependencies : deps,
+varchunk = declare_dependency(
+  include_directories : lib_incs,
+  dependencies : lib_deps,
+  sources : lib_srcs)
+
+test_deps = []
+test_deps += varchunk
+test_deps += thread_dep
+
+test_srcs = []
+test_srcs += 'test.c'
+
+test_varchunk = executable('Test', test_srcs,
+	dependencies : test_deps,
 	install : false)
 
 test('Test', test_varchunk,
