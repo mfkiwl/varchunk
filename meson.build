@@ -22,7 +22,7 @@ lib_incs = []
 lib_incs += include_directories('')
 
 lib_srcs = []
-lib_srcs += 'varchunk.c'
+lib_srcs += join_paths('src', 'varchunk.c')
 
 if host_machine.system() == 'linux'
 	rt_dep = cc.find_library('rt')
@@ -39,7 +39,7 @@ test_deps += varchunk
 test_deps += thread_dep
 
 test_srcs = []
-test_srcs += 'test.c'
+test_srcs += join_paths('test', 'test.c')
 
 test_varchunk = executable('Test', test_srcs,
 	dependencies : test_deps,

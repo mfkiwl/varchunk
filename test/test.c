@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include <assert.h>
 
-#include <varchunk.h>
+#include <varchunk/varchunk.h>
 
 #if !defined(_WIN32)
 #	include <sys/mman.h>

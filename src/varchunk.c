@@ -9,7 +9,7 @@
 #	include <sys/mman.h> // mlock
 #endif
 
-#include <varchunk.h>
+#include <varchunk/varchunk.h>
 
 #define VARCHUNK_PAD(SIZE) ( ( (size_t)(SIZE) + 7U ) & ( ~7U ) )
 
