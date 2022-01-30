@@ -51,7 +51,7 @@ test('Test', test_varchunk,
 
 if reuse.found()
   test('REUSE', reuse, args : [
-    '--root', meson.source_root(),
+    '--root', meson.current_source_dir(),
     'lint'
   ])
 endif
