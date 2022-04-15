@@ -4,8 +4,8 @@
 project('varchunk', 'c', default_options : [
 	'buildtype=release',
 	'warning_level=3',
-	'werror=true',
-	'b_lto=false',
+	'werror=false',
+	'b_lto=true',
 	'c_std=c11'])
 
 reuse = find_program('reuse', required : false)
